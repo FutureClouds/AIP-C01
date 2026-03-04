@@ -81,7 +81,6 @@
             transition: all 0.3s ease;
         }
 
-        /* ===== Quiz Top Bar (page 2 only) ===== */
         .quiz-topbar {
             display:none; position:fixed; top:0; left:0; right:0;
             z-index:1998; height:62px;
@@ -132,7 +131,6 @@
         .fab-dropdown .fab-item-label { color:rgba(255,255,255,.88); font-size:.85rem; font-weight:600; flex:1; white-space:nowrap; background:none; box-shadow:none; padding:0; opacity:1; transform:none; pointer-events:all; border-radius:0; }
         .fab-dropdown .fab-item-btn   { width:38px; height:38px; font-size:1rem; flex-shrink:0; }
 
-        /* ===== Normal FAB ===== */
         .fab-wrapper {
             position:fixed; top:20px; right:20px;
             z-index:2000; display:flex; flex-direction:column; align-items:flex-end; gap:8px;
@@ -173,7 +171,7 @@
             padding:0; margin:0; flex-shrink:0;
         }
         .fab-item-btn:hover { transform:scale(1.15); box-shadow:0 5px 18px rgba(0,0,0,0.38); }
-        .fab-btn-theme      { background:linear-gradient(135deg, #f39c12, #e67e22); color:white; }
+        .fab-btn-theme      { background:linear-gradient(135deg, #00aeff, #8e44ad); color:white; }
         .fab-btn-pdf        { background:linear-gradient(135deg, #27ae60, #2ecc71); color:white; }
         .fab-btn-timer-hide { background:linear-gradient(135deg, #e74c3c, #c0392b); color:white; }
         .fab-btn-timer-show { background:linear-gradient(135deg, #27ae60, #16a085); color:white; }
@@ -301,6 +299,38 @@
         .correct-answer-label{ color:var(--question-text); font-weight:bold; }
         .correct-answer-text { color:#3498db; font-weight:bold; }
 
+        /* ===== SOURCE LINK ===== */
+        .review-source-box {
+            margin-top: 12px;
+            padding: 0;
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .review-source-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #000;
+            white-space: nowrap;
+        }
+        [data-theme="dark"] .review-source-label {
+            color: #fff;
+        }
+        .review-source-link {
+            color: #8e44ad;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .review-source-link:hover {
+            color: #bc92ce;
+            text-decoration: underline;
+        }
+        /* ===== END SOURCE LINK ===== */
+
         .quiz-questions { text-align:left; max-height:none; overflow-y:visible; padding:0; margin:0; }
 
         .submit-container {
@@ -317,7 +347,6 @@
         .statistics-box { background:var(--result-box-bg); border:1px solid var(--result-box-border); color:var(--result-box-text); }
         .statistics-box h3 { color:var(--result-box-text); }
 
-        /* Mode Selection */
         .mode-selection-container {
             display:flex; flex-direction:row; justify-content:center;
             align-items:stretch; gap:30px; margin:40px 0; flex-wrap:wrap;
@@ -340,7 +369,6 @@
         }
         .mode-select-btn:hover { background:linear-gradient(45deg, #8e44ad, #9b59b6); transform:scale(1.05); }
 
-        /* Custom Range */
         .custom-range-input {
             padding:12px 15px; margin:8px; font-size:1.1rem;
             background-color:var(--input-bg); color:var(--input-color);
@@ -351,11 +379,9 @@
         .range-row { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin:10px 0; }
         .range-label { font-size:1rem; font-weight:600; color:var(--text-color); }
 
-        /* Review info boxes */
         .review-info-box        { margin-bottom:15px; padding:10px; background:var(--review-info-bg); border-radius:8px; }
         .review-explanation-box { padding:10px; background:var(--review-explanation-bg); border-radius:8px; }
 
-        /* Collapsible Review Items */
         .review-item {
             border: 1px solid var(--result-box-border);
             border-radius: 10px;
@@ -397,7 +423,6 @@
         .review-item-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--result-box-border); }
         .review-item-body.open { display: block; }
 
-        /* Sub-question (composite) */
         .composite-questions { margin-top:20px; }
         .sub-question { margin-bottom:15px; border:2px solid var(--option-border); border-radius:8px; background:var(--option-bg); overflow:hidden; }
         .sub-question-header { padding:15px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; background:var(--option-bg); transition:all 0.3s ease; color:var(--question-text); }
@@ -626,6 +651,7 @@
         var timeLimit;
 
         // ===== Parse Questions from AIP.js =====
+        // *** MODIFIED: now also captures the source URL line (a bare https:// line) ***
         function parseQuestionsText(text) {
             if (!text) return;
             var blocks = text.split('\n\n');
@@ -640,6 +666,7 @@
 
                 var question = lines[qLineIdx].trim().substring(2).trim();
                 var options = [], correct = [], questionImages = [], optionImages = {};
+                var sourceUrl = '';   // *** NEW: capture source URL ***
 
                 for (var i = qLineIdx + 1; i < lines.length; i++) {
                     var line = lines[i].trim();
@@ -653,6 +680,9 @@
                         correct.push(options.length - 1);
                     } else if (/^[A-Z]\./.test(line)) {
                         options.push(line.substring(2).trim());
+                    } else if (/^https?:\/\//i.test(line)) {
+                        // *** NEW: detect bare URL line as source ***
+                        sourceUrl = line;
                     }
                 }
                 if (!options.length) return;
@@ -663,7 +693,8 @@
                     isMultipleChoice: correct.length > 1,
                     isComposite: false,
                     questionImages: questionImages,
-                    optionImages: optionImages
+                    optionImages: optionImages,
+                    sourceUrl: sourceUrl   // *** NEW ***
                 });
             }
 
@@ -1025,6 +1056,16 @@
             if (header) header.classList.toggle('open', open);
         }
 
+        // *** NEW HELPER: builds the source link HTML if a URL exists ***
+        function buildSourceHTML(q) {
+            if (!q.sourceUrl) return '';
+            return `
+                <div class="review-source-box">
+                    <span class="review-source-label">Source:</span>
+                    <a class="review-source-link" href="${q.sourceUrl}" target="_blank" rel="noopener noreferrer">Click here</a>
+                </div>`;
+        }
+
         function buildReviewQuestionHTML(q, index, timeExpired) {
             const qLabel = (window.currentMode === 'custom' && q.originalIndex != null)
                 ? `Question ${q.originalIndex}` : `Question ${index + 1}`;
@@ -1045,7 +1086,6 @@
                     return ua !== null && ua === subQ.correct;
                 });
                 const badgeClass = allOk ? 'correct' : 'wrong';
-                const badgeText  = allOk ? '1/1' : '0/1';
                 return `
                     <div class="review-item ${badgeClass}" id="reviewItem${index}">
                         <div class="review-item-body" id="reviewBody${index}">
@@ -1068,6 +1108,7 @@
                                             </div>`;
                                     }).join('')}
                                 </div>
+                                ${buildSourceHTML(q)}
                             </div>
                         </div>
                     </div>`;
@@ -1120,6 +1161,7 @@
                                         <span class="correct-answer-label">The correct answer:</span>
                                         <div class="correct-answer-text" style="margin-top:8px;">${caText}</div>
                                     </div>
+                                    ${buildSourceHTML(q)}
                                 </div>
                             </div>
                         </div>
