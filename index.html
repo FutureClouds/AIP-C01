@@ -382,7 +382,7 @@
                     </div>
                     <div class="fab-item" id="fabTimerItem" onclick="toggleFabTimer(); closeTopbarMenu();" style="cursor:pointer;">
                         <span class="fab-item-label" id="fabTimerToggleLabel">Hide Timer</span>
-                        <button class="fab-item-btn fab-btn-timer-hide" id="fabTimerToggleBtn" onclick="event.stopPropagation(); toggleFabTimer(); closeTopbarMenu();">👁️❌</button>
+                        <button class="fab-item-btn fab-btn-timer-hide" id="fabTimerToggleBtn" onclick="event.stopPropagation(); toggleFabTimer(); closeTopbarMenu();">❌</button>
                     </div>
                 </div>
             </div>
@@ -658,7 +658,7 @@
             var btn=document.getElementById('fabTimerToggleBtn');
             var lbl=document.getElementById('fabTimerToggleLabel');
             if(pill) pill.classList.toggle('hidden-timer', !timerVisible);
-            if(btn){ btn.className='fab-item-btn '+(timerVisible?'fab-btn-timer-hide':'fab-btn-timer-show'); btn.textContent=timerVisible?'👁️❌':'👁️'; }
+            if(btn){ btn.className='fab-item-btn '+(timerVisible?'fab-btn-timer-hide':'fab-btn-timer-show'); btn.textContent=timerVisible?'❌':'👁️'; }
             if(lbl) lbl.textContent=timerVisible?'Hide Timer':'Show Timer';
         }
         function updatePdfButtonVisibility(pageId) {
