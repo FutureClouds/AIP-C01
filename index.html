@@ -6,6 +6,18 @@
     <title>AWS Certified Generative AI Developer - Professional (AIP-C01) Exam</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        /* ===== FIX: Prevent horizontal scroll on ALL devices ===== */
+        html {
+            overflow-x: hidden;
+        }
+        body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+        * {
+            box-sizing: border-box;
+        }
+
         [data-theme="light"] {
             --bg-gradient: linear-gradient(45deg, #3498db, #8e44ad);
             --text-color: #fff;
@@ -90,7 +102,7 @@
             padding:0 22px; gap:14px;
         }
         .quiz-topbar.active { display:flex; }
-        .quiz-topbar-left  { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
+        .quiz-topbar-left  { display:flex; align-items:center; gap:10px; flex:1; min-width:0; overflow:hidden; }
         .quiz-topbar-title { color:#fff; font-size:.95rem; font-weight:700; white-space:nowrap; opacity:.9; }
         .quiz-topbar-info  { color:rgba(255,255,255,.5); font-size:.78rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .quiz-topbar-right { display:flex; align-items:center; gap:12px; flex-shrink:0; }
@@ -185,11 +197,6 @@
         }
 
         #page2.page.active { padding-top:62px; }
-        @media (max-width: 768px) {
-            .fab-wrapper { top:12px; right:12px; }
-            .fab-main { width:44px; height:44px; font-size:1.15rem; }
-            .fab-item-btn { width:38px; height:38px; font-size:1rem; }
-        }
 
         .quiz-container {
             width:90%; max-width:1200px; margin:0 auto; padding:20px;
@@ -206,7 +213,9 @@
         .setup-container { display:flex; flex-direction:column; align-items:center; margin:40px 0; gap:30px; }
         .setup-box {
             background:var(--setup-box-bg); padding:30px; border-radius:15px;
-            min-width:400px; backdrop-filter:blur(10px);
+            /* FIX: replaced min-width:400px with width:100%+max-width */
+            width:100%; max-width:460px;
+            backdrop-filter:blur(10px);
             border:1px solid var(--setup-box-border); text-align:center; transition:all 0.3s ease;
         }
         .setup-box:hover { background:var(--setup-hover-bg); transform:translateY(-3px); box-shadow:0 12px 24px rgba(138,68,173,0.4); }
@@ -216,7 +225,7 @@
             padding:15px; margin:10px; font-size:1.1rem;
             background-color:var(--select-bg); color:var(--select-color);
             border:1px solid var(--option-border); border-radius:8px;
-            width:200px; cursor:pointer;
+            width:200px; max-width:100%; cursor:pointer;
         }
 
         button {
@@ -225,6 +234,7 @@
             color:#fff; border:none; border-radius:8px; cursor:pointer;
             transition:all 0.3s ease; margin:20px 10px;
             font-weight:600; box-shadow:0 4px 8px rgba(0,0,0,0.3);
+            max-width:100%;
         }
         button:hover { background:linear-gradient(45deg, #8e44ad, #9b59b6); transform:scale(1.05); }
         button:disabled { background:#95a5a6; cursor:not-allowed; transform:none; }
@@ -233,6 +243,7 @@
             background:var(--question-bg); padding:25px; margin:20px 0;
             border-radius:15px; box-shadow:0 8px 16px rgba(0,0,0,0.2);
             transition:all 0.3s ease; text-align:left; color:var(--question-text);
+            overflow:hidden; word-break:break-word;
         }
         .question:hover { transform:translateY(-2px); box-shadow:0 12px 24px rgba(0,0,0,0.3); }
         .question h3 { color:var(--header-color); font-size:1.3rem; margin-bottom:20px; font-weight:600; }
@@ -251,22 +262,22 @@
             border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.2); display:block;
         }
         .option-image {
-            max-width:400px; height:auto; margin:10px 0;
+            /* FIX: max-width:100% instead of fixed 400px */
+            max-width:100%; height:auto; margin:10px 0;
             border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.2); display:block;
         }
-        @media (max-width: 768px) { .option-image { max-width:300px; } }
-        @media (max-width: 480px) { .option-image { max-width:250px; } }
 
-        .image-container { text-align:center; margin:15px 0; }
+        .image-container { text-align:center; margin:15px 0; overflow:hidden; }
         .option-content { display:flex; align-items:flex-start; gap:15px; }
-        .option-text { flex:1; }
+        .option-text { flex:1; min-width:0; word-break:break-word; }
 
         .warning { color:#e74c3c; font-weight:bold; margin:10px 0; }
 
         .result-container { display:flex; flex-wrap:wrap; justify-content:space-around; margin:30px 0; gap:20px; }
         .result-box {
             background:var(--result-box-bg); padding:30px; border-radius:15px;
-            min-width:250px; backdrop-filter:blur(10px);
+            /* FIX: min-width:200px instead of 250px, flex:1 already handles stretching */
+            min-width:200px; backdrop-filter:blur(10px);
             border:1px solid var(--result-box-border); flex:1; max-width:300px; color:var(--result-box-text);
         }
         .result-box h3 { font-size:1.5rem; margin-bottom:15px; color:var(--result-box-text); }
@@ -277,6 +288,7 @@
         .review-question {
             background:var(--question-bg); padding:20px; margin:15px 0;
             border-radius:10px; color:var(--question-text); text-align:left;
+            overflow:hidden; word-break:break-word;
         }
 
         .user-correct-label  { color:var(--question-text); font-weight:bold; }
@@ -309,7 +321,8 @@
         }
         .mode-card {
             background:var(--setup-box-bg); padding:35px 30px; border-radius:15px;
-            min-width:280px; max-width:340px; flex:1; backdrop-filter:blur(10px);
+            /* FIX: min-width:260px with flex:1 is safer than 280px */
+            min-width:260px; max-width:340px; flex:1; backdrop-filter:blur(10px);
             border:2px solid var(--setup-box-border); text-align:center;
             transition:all 0.3s ease; cursor:pointer;
         }
@@ -330,7 +343,7 @@
             padding:12px 15px; margin:8px; font-size:1.1rem;
             background-color:var(--input-bg); color:var(--input-color);
             border:1px solid var(--option-border); border-radius:8px;
-            width:130px; cursor:text; text-align:center;
+            width:130px; max-width:100%; cursor:text; text-align:center;
         }
         .custom-range-input:focus { outline:2px solid #3498db; }
         .range-row { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin:10px 0; }
@@ -353,9 +366,40 @@
         .horizontal-option.selected { background:var(--option-selected-bg); color:var(--option-selected-color); border-color:#2980b9; }
         .horizontal-option input[type="radio"] { display:none; }
         .horizontal-option span { user-select:none; }
+
+        /* ===== RESPONSIVE BREAKPOINTS ===== */
         @media (max-width: 768px) {
+            .fab-wrapper { top:12px; right:12px; }
+            .fab-main { width:44px; height:44px; font-size:1.15rem; }
+            .fab-item-btn { width:38px; height:38px; font-size:1rem; }
+
+            h1 { font-size: 1.9rem; }
+
+            /* FIX: Remove min-width constraints on small screens */
+            .setup-box { min-width: unset !important; width: 100%; }
+            .mode-card { min-width: unset !important; width: 100%; max-width: 100%; }
+            .result-box { min-width: unset !important; width: 100%; max-width: 100%; }
+
             .sub-question-options { flex-direction:column; align-items:stretch; }
             .horizontal-option { justify-content:flex-start; min-width:auto; }
+
+            select { width: 100%; max-width: 100%; margin: 10px 0; }
+
+            .quiz-container { width: 94%; padding: 15px; }
+
+            /* FIX: Make buttons wrap properly */
+            .submit-container button,
+            .quiz-container > div > button { width: auto; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.5rem; }
+            .quiz-container { width: 96%; padding: 12px; }
+            .setup-box { padding: 18px 12px; }
+            .mode-card { padding: 25px 15px; }
+            button { font-size: 1rem; padding: 12px 18px; margin: 10px 6px; }
+            .custom-range-input { width: 110px; }
+            .result-box { padding: 20px 15px; }
         }
     </style>
     <script src="AIP.js"></script>
@@ -511,7 +555,7 @@
 
     <!-- Page 2: Quiz -->
     <div id="page2" class="page">
-        <div style="width:88%; max-width:1140px; margin:0 auto; padding:20px; margin-top:30px; margin-bottom:30px;">
+        <div style="width:90%; max-width:1140px; margin:0 auto; padding:20px; margin-top:30px; margin-bottom:30px;">
             <div style="text-align:center; margin-bottom:30px;">
                 <h1>AWS Certified<br>Generative AI Developer<br>Professional<br>(AIP-C01) Exam</h1>
                 <div id="questionInfo" style="font-size:1.2rem; color:var(--text-color);"></div>
