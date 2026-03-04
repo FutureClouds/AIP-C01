@@ -363,8 +363,10 @@
             overflow: hidden;
             background: var(--result-box-bg);
         }
-        .review-item.correct { background: rgba(39,174,96,0.07); border-color: rgba(39,174,96,0.3); }
-        .review-item.wrong   { background: rgba(231,76,60,0.07);  border-color: rgba(231,76,60,0.3); }
+        .review-item.correct .review-item-header:hover,
+        .review-item.correct .review-item-header.open { background: rgba(39,174,96,0.15); }
+        .review-item.wrong   .review-item-header:hover,
+        .review-item.wrong   .review-item-header.open { background: rgba(231,76,60,0.15); }
         .review-item-header {
             display: flex;
             justify-content: space-between;
@@ -375,8 +377,6 @@
             background: transparent;
             transition: background 0.2s;
         }
-        .review-item.correct .review-item-header:hover { background: rgba(39,174,96,0.12); }
-        .review-item.wrong   .review-item-header:hover { background: rgba(231,76,60,0.12); }
         .review-item-left { display: flex; align-items: center; gap: 10px; }
         .review-item-arrow {
             font-size: 0.8rem;
@@ -1016,11 +1016,13 @@
         }
 
         function toggleReviewItem(index) {
-            const body  = document.getElementById('reviewBody'  + index);
-            const arrow = document.getElementById('reviewArrow' + index);
+            const body   = document.getElementById('reviewBody'  + index);
+            const arrow  = document.getElementById('reviewArrow' + index);
+            const header = document.querySelector('#reviewItem' + index + ' .review-item-header');
             if (!body) return;
             const open = body.classList.toggle('open');
-            if (arrow) arrow.classList.toggle('open', open);
+            if (arrow)  arrow.classList.toggle('open', open);
+            if (header) header.classList.toggle('open', open);
         }
 
         function buildReviewQuestionHTML(q, index, timeExpired) {
